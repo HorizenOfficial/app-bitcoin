@@ -21,6 +21,8 @@
 #include "btchip_display_variables.h"
 #include "ui.h"
 #include "ledger_assert.h"
+#include "write.h"
+#include "read.h"
 
 #define SIGHASH_ALL 0x01
 
@@ -61,13 +63,13 @@ unsigned short btchip_apdu_hash_sign() {
         parameters += (4 * G_io_apdu_buffer[ISO_OFFSET_CDATA]) + 1;
         authorizationLength = *(parameters++);
         parameters += authorizationLength;
-        lockTime = btchip_read_u32(parameters, 1, 0);
+        lockTime = read_u32_be(parameters, 0);
         parameters += 4;
         sighashType = *(parameters++);
-        expiryHeight = btchip_read_u32(parameters, 1, 0);
-        btchip_write_u32_le(btchip_context_D.nLockTime, lockTime);
-        btchip_write_u32_le(btchip_context_D.sigHashType, sighashType);
-        btchip_write_u32_le(btchip_context_D.nExpiryHeight, expiryHeight);
+        expiryHeight = read_u32_be(parameters, 0);
+        write_u32_le(btchip_context_D.nLockTime, 0, lockTime);
+        write_u32_le(btchip_context_D.sigHashType, 0, sighashType);
+        write_u32_le(btchip_context_D.nExpiryHeight, 0, expiryHeight);
         btchip_context_D.overwinterSignReady = 1;
         return BTCHIP_SW_OK;
     }
@@ -96,7 +98,7 @@ unsigned short btchip_apdu_hash_sign() {
     parameters += (4 * G_io_apdu_buffer[ISO_OFFSET_CDATA]) + 1;
     authorizationLength = *(parameters++);
     parameters += authorizationLength;
-    lockTime = btchip_read_u32(parameters, 1, 0);
+    lockTime = read_u32_be(parameters, 0);
     parameters += 4;
     sighashType = *(parameters++);
     btchip_context_D.transactionSummary.sighashType = sighashType;
@@ -122,8 +124,8 @@ unsigned short btchip_apdu_hash_sign() {
 
     // Finalize the hash
     if (!btchip_context_D.usingOverwinter) {
-        btchip_write_u32_le(dataBuffer, lockTime);
-        btchip_write_u32_le(dataBuffer + 4, sighashType);
+        write_u32_le(dataBuffer, 0, lockTime);
+        write_u32_le(dataBuffer, 4, sighashType);
         PRINTF("--- ADD TO HASH FULL:\n%.*H\n", sizeof(dataBuffer), dataBuffer);
         if (cx_hash_no_throw(&btchip_context_D.transactionHashFull.sha256.header, 0,
                 dataBuffer, sizeof(dataBuffer), NULL, 0)) {

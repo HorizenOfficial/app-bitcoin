@@ -170,42 +170,6 @@ unsigned char btchip_secure_memcmp(const void *buf1, const void *buf2,
     return error;
 }
 
-unsigned long int btchip_read_u32(unsigned char *buffer, unsigned char be,
-                                  unsigned char skipSign) {
-    unsigned char i;
-    unsigned long int result = 0;
-    unsigned char shiftValue = (be ? 24 : 0);
-    for (i = 0; i < 4; i++) {
-        unsigned char x = (unsigned char)buffer[i];
-        if ((i == 0) && skipSign) {
-            x &= 0x7f;
-        }
-        result += ((unsigned long int)x) << shiftValue;
-        if (be) {
-            shiftValue -= 8;
-        } else {
-            shiftValue += 8;
-        }
-    }
-    return result;
-}
-
-void btchip_write_u32_be(unsigned char *buffer, unsigned long int value) {
-    buffer[0] = ((value >> 24) & 0xff);
-    buffer[1] = ((value >> 16) & 0xff);
-    buffer[2] = ((value >> 8) & 0xff);
-    buffer[3] = (value & 0xff);
-}
-
-void btchip_write_u32_le(unsigned char *buffer, unsigned long int value) {
-    buffer[0] = (value & 0xff);
-    buffer[1] = ((value >> 8) & 0xff);
-    buffer[2] = ((value >> 16) & 0xff);
-    buffer[3] = ((value >> 24) & 0xff);
-}
-
-
-
 void btchip_public_key_hash160(unsigned char *in, unsigned short inlen,
                                unsigned char *out) {
     cx_ripemd160_t riprip;

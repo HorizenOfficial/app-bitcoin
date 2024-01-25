@@ -17,6 +17,8 @@
 
 #include "btchip_internal.h"
 #include "btchip_apdu_constants.h"
+#include "read.h"
+#include "write.h"
 
 #define GET_TRUSTED_INPUT_P1_FIRST 0x00
 #define GET_TRUSTED_INPUT_P1_NEXT 0x80
@@ -39,7 +41,7 @@ unsigned short btchip_apdu_get_trusted_input() {
     if (G_io_apdu_buffer[ISO_OFFSET_P1] == GET_TRUSTED_INPUT_P1_FIRST) {
         // Initialize
         btchip_context_D.transactionTargetInput =
-            btchip_read_u32(G_io_apdu_buffer + ISO_OFFSET_CDATA, 1, 0);
+            read_u32_be(G_io_apdu_buffer, ISO_OFFSET_CDATA);
         btchip_context_D.transactionContext.transactionState =
             BTCHIP_TRANSACTION_NONE;
         btchip_context_D.trustedInputProcessed = 0;
@@ -82,7 +84,7 @@ unsigned short btchip_apdu_get_trusted_input() {
         G_io_apdu_buffer[1] = 0x00;
         cx_hash_sha256(G_io_apdu_buffer + TRUSTED_INPUT_SIZE, 32, G_io_apdu_buffer + 4, 32);
 
-        btchip_write_u32_le(G_io_apdu_buffer + 4 + 32,
+        write_u32_le(G_io_apdu_buffer, 4 + 32,
                             btchip_context_D.transactionTargetInput);
         memmove(G_io_apdu_buffer + 4 + 32 + 4,
                    btchip_context_D.transactionContext.transactionAmount, 8);

@@ -23,6 +23,7 @@
 #include "segwit_addr.h"
 #include "cashaddr.h"
 #include "btchip_apdu_get_wallet_public_key.h"
+#include "read.h"
 
 int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, bool uncompressedPublicKeys, unsigned char* publicKey, unsigned char* chainCode) {
     uint8_t public_key[65];
@@ -97,7 +98,7 @@ unsigned short btchip_apdu_get_wallet_public_key() {
 
     if(display_request_token){
         uint8_t request_token_offset = ISO_OFFSET_CDATA + G_io_apdu_buffer[ISO_OFFSET_CDATA]*4 + 1;
-        request_token = btchip_read_u32(G_io_apdu_buffer + request_token_offset, true, false);
+        request_token = read_u32_be(G_io_apdu_buffer, request_token_offset);
     }
 
     SB_CHECK(N_btchip.bkp.config.operationMode);

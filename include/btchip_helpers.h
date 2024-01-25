@@ -40,12 +40,6 @@ unsigned char btchip_output_script_is_op_create(unsigned char *buffer,
 unsigned char btchip_output_script_is_op_call(unsigned char *buffer,
                                                 size_t size);
 
-unsigned long int btchip_read_u32(unsigned char *buffer, unsigned char be,
-                                  unsigned char skipSign);
-
-void btchip_write_u32_be(unsigned char *buffer, unsigned long int value);
-void btchip_write_u32_le(unsigned char *buffer, unsigned long int value);
-
 void btchip_public_key_hash160(unsigned char *in, unsigned short inlen,
                                unsigned char *out);
 unsigned short btchip_public_key_to_encoded_base58(

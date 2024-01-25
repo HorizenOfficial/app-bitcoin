@@ -18,6 +18,7 @@
 #include "btchip_internal.h"
 #include "btchip_apdu_constants.h"
 #include "btchip_bagl_extensions.h"
+#include "read.h"
 
 #define P1_PREPARE 0x00
 #define P1_SIGN 0x80
@@ -38,7 +39,7 @@ unsigned char checkBitId(unsigned char *bip32Path) {
     unsigned char bip32PathLength = bip32Path[0];
     bip32Path++;
     for (i = 0; i < bip32PathLength; i++) {
-        unsigned short account = btchip_read_u32(bip32Path, 1, 0);
+        unsigned short account = read_u32_be(bip32Path, 0);
         bip32Path += 4;
 
         if (account == BITID_DERIVE) {

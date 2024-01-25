@@ -275,7 +275,7 @@ uint8_t prepare_single_output() {
         (memcmp(btchip_context_D.currentOutput + offset + 3, "omni", 4) == 0) &&
         (memcmp(btchip_context_D.currentOutput + offset + 3 + 4, "\0\0\0\0", 4) == 0)) {
             uint8_t headerLength;
-            uint32_t omniAssetId = btchip_read_u32(btchip_context_D.currentOutput + offset + 3 + 4 + 4, 1, 0);
+            uint32_t omniAssetId = read_u32_be(btchip_context_D.currentOutput, offset + 3 + 4 + 4);
             switch(omniAssetId) {
                 case OMNI_ASSETID:
                     strcpy(vars.tmp.fullAmount, "OMNI ");

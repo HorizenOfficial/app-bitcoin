@@ -19,6 +19,8 @@
 #include "btchip_apdu_constants.h"
 #include "btchip_display_variables.h"
 #include "ledger_assert.h"
+#include "read.h"
+#include "write.h"
 
 #define CONSENSUS_BRANCH_ID_OVERWINTER 0x5ba81b19
 #define CONSENSUS_BRANCH_ID_SAPLING 0x76b809bb
@@ -28,8 +30,8 @@
 #define TRUSTED_INPUT_OVERWINTER ( (G_coin_config->kind == COIN_KIND_ZCASH || \
                                     G_coin_config->kind == COIN_KIND_ZCLASSIC || \
                                     G_coin_config->kind == COIN_KIND_KOMODO) && \
-                                    (btchip_read_u32(btchip_context_D.transactionVersion, 0, 0) & (1<<31)) && \
-                                    (btchip_read_u32(btchip_context_D.transactionVersion, 0, 0) ^ (1<<31)) >= 0x03 \
+                                    (read_u32_le(btchip_context_D.transactionVersion, 0) & (1<<31)) && \
+                                    (read_u32_le(btchip_context_D.transactionVersion, 0) ^ (1<<31)) >= 0x03 \
                                 )
 
 #define DEBUG_LONG "%d"
@@ -131,8 +133,7 @@ unsigned long int transaction_get_varint(void) {
         unsigned long int result;
         transaction_offset_increase(1);
         check_transaction_available(4);
-        result =
-            btchip_read_u32(btchip_context_D.transactionBufferPointer, 0, 0);
+        result = read_u32_le(btchip_context_D.transactionBufferPointer, 0);
         transaction_offset_increase(4);
         return result;
     } else {
@@ -168,10 +169,10 @@ void transaction_parse(unsigned char parseMode) {
                             uint8_t parameters[16];
                             memmove(parameters, OVERWINTER_PARAM_SIGHASH, 16);
                             if (G_coin_config->kind == COIN_KIND_ZCLASSIC) {
-                                btchip_write_u32_le(parameters + 12, CONSENSUS_BRANCH_ID_ZCLASSIC);
+                                write_u32_le(parameters, 12, CONSENSUS_BRANCH_ID_ZCLASSIC);
                             }
                             else {
-                                btchip_write_u32_le(parameters + 12,
+                                write_u32_le(parameters, 12,
                                     btchip_context_D.usingOverwinter == ZCASH_USING_OVERWINTER_SAPLING ?
                                     (G_coin_config->zcash_consensus_branch_id != 0 ? G_coin_config->zcash_consensus_branch_id : CONSENSUS_BRANCH_ID_SAPLING) : CONSENSUS_BRANCH_ID_OVERWINTER);
                             }

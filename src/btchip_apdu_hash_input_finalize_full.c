@@ -23,6 +23,7 @@
 #include "btchip_bagl_extensions.h"
 #include "ui.h"
 #include "lib_standard_app/crypto_helpers.h"
+#include "read.h"
 
 #define FINALIZE_P1_MORE 0x00
 #define FINALIZE_P1_LAST 0x80
@@ -154,7 +155,7 @@ bool handle_output_state() {
                 break;
             }
             btchip_context_D.totalOutputs = btchip_context_D.remainingOutputs =
-                btchip_read_u32(btchip_context_D.currentOutput + 1, 0, 0);
+                read_u32_le(btchip_context_D.currentOutput, 1);
             discardSize = 5;
             btchip_context_D.outputParsingState = BTCHIP_OUTPUT_PARSING_OUTPUT;
             processed = true;
@@ -176,8 +177,7 @@ bool handle_output_state() {
             if (btchip_context_D.currentOutputOffset < 9 + 2) {
                 break;
             }
-            scriptSize =
-                btchip_read_u32(btchip_context_D.currentOutput + 9, 0, 0);
+            scriptSize = read_u32_le(btchip_context_D.currentOutput, 9);
             discardSize = 3;
         } else {
             // Unrealistically large script
