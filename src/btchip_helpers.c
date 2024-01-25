@@ -18,8 +18,13 @@
 #include "btchip_internal.h"
 #include "btchip_apdu_constants.h"
 #include "lib_standard_app/crypto_helpers.h"
-#include "bip32_path.h"
+#include "bip32.h"
 #include "ledger_assert.h"
+
+typedef struct bip32_path {
+    unsigned char length;
+    unsigned int path[MAX_BIP32_PATH];
+} bip32_path_t;
 
 const unsigned char TRANSACTION_OUTPUT_SCRIPT_PRE[] = {
     0x19, 0x76, 0xA9,
@@ -298,16 +303,16 @@ Account < 100, change == 1 or 0, address index < 50000
 Returns 1 if the path is unusual, or not compliant with BIP44*/
 unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_path) {
 
-    unsigned char path_len;
     bip32_path_t bip32PathInt;
 
-    path_len = bip32Path[0];
-    if (!parse_serialized_path(&bip32PathInt, bip32Path, MAX_BIP32_PATH_LENGTH)) {
+    bip32PathInt.length = bip32Path[0];
+
+    if (!bip32_path_read(bip32Path + 1, MAX_BIP32_PATH_LENGTH, bip32PathInt.path, bip32PathInt.length)) {
         return 1;
     }
 
     // If the path length is not compliant with BIP44 or if the purpose don't match regular usage, return a warning
-    if(path_len != BIP44_PATH_LEN ||
+    if(bip32PathInt.length != BIP44_PATH_LEN ||
        ((bip32PathInt.path[BIP44_PURPOSE_OFFSET]^0x80000000) != 44 &&
        (bip32PathInt.path[BIP44_PURPOSE_OFFSET]^0x80000000) != 49 &&
        (bip32PathInt.path[BIP44_PURPOSE_OFFSET]^0x80000000) != 84)) {
@@ -337,16 +342,19 @@ Returns 0 if the path is non compliant, or 1 if compliant
 */
 unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey) {
     bip32_path_t bip32PathInt;
+
+    bip32PathInt.length = bip32Path[0];
+
     // No enforcement required
     if (G_coin_config->bip44_coin_type == 0) {
         return 1;
     }
     // Path is too short - always require a user validation if signing
-    if (bip32Path[0] < 2) {
+    if (bip32PathInt.length < 2) {
         return for_pubkey;
     }
 
-    if (!parse_serialized_path(&bip32PathInt, bip32Path, MAX_BIP32_PATH_LENGTH)) {
+    if (!bip32_path_read(bip32Path + 1, MAX_BIP32_PATH_LENGTH, bip32PathInt.path, bip32PathInt.length)) {
         return 1;
     }
 
@@ -438,7 +446,7 @@ int btchip_sign_finalhash(unsigned char* path, size_t path_len, unsigned char *i
     bip32_path_t bip32Path;
     bip32Path.length = path[0];
 
-    if (!parse_serialized_path(&bip32Path, path, path_len)) {
+    if (!bip32_path_read(path + 1, MAX_BIP32_PATH_LENGTH, bip32Path.path, bip32Path.length)) {
         return -1;
     }
 
@@ -469,7 +477,9 @@ int btchip_get_public_key(unsigned char* keyPath, size_t keyPath_len, uint8_t ra
 
     bip32_path_t bip32Path;
 
-    if (!parse_serialized_path(&bip32Path, keyPath, keyPath_len)) {
+    bip32Path.length = keyPath[0];
+
+    if (!bip32_path_read(keyPath + 1, MAX_BIP32_PATH_LENGTH, bip32Path.path, bip32Path.length)) {
         return -1;
     }
 
