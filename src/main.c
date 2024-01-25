@@ -451,7 +451,7 @@ void btchip_bagl_confirm_message_signature() {
 }
 
 uint8_t set_key_path_to_display(unsigned char* keyPath) {
-    bip32_print_path(keyPath, vars.tmp_warning.derivation_path, MAX_DERIV_PATH_ASCII_LENGTH);
+    bip32_path_format(keyPath, vars.tmp_warning.derivation_path, MAX_DERIV_PATH_ASCII_LENGTH);
     return bip44_derivation_guard(keyPath, false);
 }
 
@@ -479,13 +479,13 @@ void btchip_bagl_request_pubkey_approval()
 
 void btchip_bagl_request_change_path_approval(unsigned char* change_path)
 {
-    bip32_print_path(change_path, vars.tmp_warning.derivation_path, sizeof(vars.tmp_warning.derivation_path));
+    bip32_path_format(change_path, vars.tmp_warning.derivation_path, sizeof(vars.tmp_warning.derivation_path));
     ui_request_change_path_approval_flow();
 }
 
 void btchip_bagl_request_sign_path_approval(unsigned char* change_path)
 {
-    bip32_print_path(change_path, vars.tmp_warning.derivation_path, sizeof(vars.tmp_warning.derivation_path));
+    bip32_path_format(change_path, vars.tmp_warning.derivation_path, sizeof(vars.tmp_warning.derivation_path));
     ui_request_sign_path_approval_flow();
 }
 

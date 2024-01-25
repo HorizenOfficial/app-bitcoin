@@ -374,44 +374,6 @@ unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey)
     return 0;
 }
 
-// Print a BIP32 path as an ascii string to display on the device screen
-// On the Ledger Blue, if the string is longer than 30 char, the string will be split in multiple lines
-unsigned char bip32_print_path(unsigned char *bip32Path, char* out, unsigned char max_out_len) {
-
-    unsigned char bip32PathLength;
-    unsigned char i, offset;
-    unsigned int current_level;
-    bool hardened;
-
-    bip32PathLength = bip32Path[0];
-    if (bip32PathLength > MAX_BIP32_PATH) {
-        THROW(INVALID_PARAMETER);
-    }
-    bip32Path++;
-    out[0] = ' ';
-    offset=1;
-    for (i = 0; i < bip32PathLength; i++) {
-        current_level = btchip_read_u32(bip32Path, 1, 0);
-        hardened = (bool)(current_level & 0x80000000);
-        if(hardened) {
-            //remove hardening flag
-            current_level ^= 0x80000000;
-        }
-        bip32Path += 4;
-        snprintf(out+offset, max_out_len-offset, "%u", current_level);
-        offset = strnlen(out, max_out_len);
-        if(offset >= max_out_len - 2) THROW(EXCEPTION_OVERFLOW);
-        if(hardened) out[offset++] = '\'';
-
-        out[offset++] = '/';
-        out[offset] = '\0';
-    }
-    // remove last '/'
-    out[offset-1] = '\0';
-
-    return offset -1;
-}
-
 void btchip_transaction_add_output(unsigned char *hash160Address,
                                    unsigned char *amount, unsigned char p2sh) {
     const unsigned char *pre = (p2sh ? TRANSACTION_OUTPUT_SCRIPT_P2SH_PRE
