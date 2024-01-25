@@ -157,19 +157,6 @@ unsigned char btchip_output_script_is_op_call(unsigned char *buffer,
     return output_script_is_op_create_or_call(buffer, size, 0xC2);
 }
 
-unsigned char btchip_secure_memcmp(const void *buf1, const void *buf2,
-                                   unsigned short length) {
-    unsigned char error = 0;
-    while (length--) {
-        error |= ((unsigned char *)buf1)[length] ^
-                 ((unsigned char *)buf2)[length];
-    }
-    if (length != 0xffff) {
-        return 1;
-    }
-    return error;
-}
-
 void btchip_public_key_hash160(unsigned char *in, unsigned short inlen,
                                unsigned char *out) {
     cx_ripemd160_t riprip;

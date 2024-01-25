@@ -431,7 +431,7 @@ void transaction_parse(unsigned char parseMode) {
                                 PRINTF("====> Input HMAC:    %.*H\n", 8, btchip_context_D.transactionBufferPointer + 2 + trustedInputLength - 8);
                                 PRINTF("====> Computed HMAC: %.*H\n", 8, trustedInput);
 
-                            if (btchip_secure_memcmp(
+                            if (os_secure_memcmp(
                                     trustedInput,       // Contains computed Hmac for now
                                     btchip_context_D.transactionBufferPointer +
                                         2 + trustedInputLength - 8,

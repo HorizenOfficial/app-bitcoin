@@ -485,7 +485,7 @@ return_OK:
                 sizeof(transactionSummary->authorizationHash));
         goto return_OK;
     } else {
-        if (btchip_secure_memcmp(
+        if (os_secure_memcmp(
                     authorizationHash,
                     transactionSummary->authorizationHash,
                     sizeof(transactionSummary->authorizationHash))) {

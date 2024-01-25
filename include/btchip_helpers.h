@@ -59,8 +59,6 @@ int btchip_sign_finalhash(unsigned char *path, size_t path_len,
 
 void btchip_transaction_add_output(unsigned char *hash160Address,
                                    unsigned char *amount, unsigned char p2sh);
-unsigned char btchip_secure_memcmp(const void *buf1, const void *buf2,
-                                   unsigned short length);
 int btchip_get_public_key(unsigned char* keyPath, size_t keyPath_len, uint8_t raw_pubkey[static 65], unsigned char* chainCode);
 
 #endif
