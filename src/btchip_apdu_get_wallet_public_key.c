@@ -25,7 +25,7 @@
 #include "btchip_apdu_get_wallet_public_key.h"
 #include "read.h"
 
-int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, bool uncompressedPublicKeys, unsigned char* publicKey, unsigned char* chainCode) {
+int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, unsigned char* publicKey, unsigned char* chainCode) {
     uint8_t public_key[65];
     int keyLength = 0;
 
@@ -33,12 +33,8 @@ int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, bool u
         return keyLength;
     }
     // Then encode it
-    if (uncompressedPublicKeys) {
-        keyLength = 65;
-    } else {
-        btchip_compress_public_key_value(public_key);
-        keyLength = 33;
-    }
+    btchip_compress_public_key_value(public_key);
+    keyLength = 33;
 
     memmove(publicKey, public_key,
                sizeof(public_key));
@@ -47,8 +43,6 @@ int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, bool u
 
 unsigned short btchip_apdu_get_wallet_public_key() {
     unsigned char keyLength;
-    unsigned char uncompressedPublicKeys =
-        ((N_btchip.bkp.config.options & BTCHIP_OPTION_UNCOMPRESSED_KEYS) != 0);
     uint32_t request_token;
     unsigned char chainCode[32];
     uint8_t is_derivation_path_unusual = 0;
@@ -110,7 +104,7 @@ unsigned short btchip_apdu_get_wallet_public_key() {
     unsigned char bip44_enforced = enforce_bip44_coin_type(G_io_apdu_buffer + ISO_OFFSET_CDATA, true);
 
     G_io_apdu_buffer[0] = 65;
-    keyLength = get_public_key_chain_code(G_io_apdu_buffer + ISO_OFFSET_CDATA, MAX_BIP32_PATH_LENGTH, uncompressedPublicKeys, G_io_apdu_buffer + 1, chainCode);
+    keyLength = get_public_key_chain_code(G_io_apdu_buffer + ISO_OFFSET_CDATA, MAX_BIP32_PATH_LENGTH, G_io_apdu_buffer + 1, chainCode);
 
     if (keyLength == 0) {
         return BTCHIP_SW_TECHNICAL_PROBLEM;
@@ -158,10 +152,8 @@ unsigned short btchip_apdu_get_wallet_public_key() {
     }
     G_io_apdu_buffer[66] = keyLength;
     PRINTF("Length %d\n", keyLength);
-    if (!uncompressedPublicKeys) {
-        // Restore for the full key component
-        G_io_apdu_buffer[1] = 0x04;
-    }
+    // Restore for the full key component
+    G_io_apdu_buffer[1] = 0x04;
 
     // output chain code
     memmove(G_io_apdu_buffer + 1 + 65 + 1 + keyLength, chainCode,

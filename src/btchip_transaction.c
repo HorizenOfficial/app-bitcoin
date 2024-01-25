@@ -144,8 +144,6 @@ unsigned long int transaction_get_varint(void) {
 }
 
 void transaction_parse(unsigned char parseMode) {
-    unsigned char optionP2SHSkip2FA =
-        ((N_btchip.bkp.config.options & BTCHIP_OPTION_SKIP_2FA_P2SH) != 0);
     BEGIN_TRY {
         TRY {
             for (;;) {
@@ -507,13 +505,6 @@ void transaction_parse(unsigned char parseMode) {
                                     TRANSACTION_HASH_FULL;
                             }
                         }
-                        // Handle non-segwit inputs (i.e. InputHashStart 1st APDU's P2==00 && data[0]==0x00)
-                        else if (!trustedInputFlag) {
-                            if (!optionP2SHSkip2FA) {
-                                PRINTF("Untrusted input not authorized\n");
-                                goto fail;
-                            }
-                        }
                         // Handle non-segwit TrustedInput (i.e. InputHashStart 1st APDU's P2==00 & data[0]==0x01)
                         else if (trustedInputFlag && !btchip_context_D.usingSegwit) {
                             memmove(
@@ -582,9 +573,6 @@ void transaction_parse(unsigned char parseMode) {
                         if (btchip_context_D.transactionContext
                                 .scriptRemaining != 0) {
                             PRINTF("Request to sign relaxed input\n");
-                            if (!optionP2SHSkip2FA) {
-                                goto fail;
-                            }
                         }
                     }
                     // Move on
@@ -607,11 +595,8 @@ void transaction_parse(unsigned char parseMode) {
                         1) {
                         if (*btchip_context_D.transactionBufferPointer ==
                             OP_CHECKMULTISIG) {
-                            if (optionP2SHSkip2FA) {
-                                PRINTF("Marking P2SH consumption\n");
-                                btchip_context_D.transactionContext
-                                    .consumeP2SH = 1;
-                            }
+                            PRINTF("Marking P2SH consumption\n");
+                            btchip_context_D.transactionContext.consumeP2SH = 1;
                         } else {
                             // When using the P2SH shortcut, all inputs must use
                             // P2SH

@@ -266,9 +266,7 @@ unsigned short btchip_compute_hash() {
             btchip_context_D.transactionSummary.keyPath,
             sizeof(btchip_context_D.transactionSummary.keyPath),
             hash, sizeof(hash), // IN
-            G_io_apdu_buffer, &out_len,                        // OUT
-            ((N_btchip.bkp.config.options &
-              BTCHIP_OPTION_DETERMINISTIC_SIGNATURE) != 0));
+            G_io_apdu_buffer, &out_len);                        // OUT
     btchip_context_D.outLength = G_io_apdu_buffer[1] + 2;
             memset(&btchip_context_D.transactionSummary, 0,
                       sizeof(btchip_transaction_summary_t));

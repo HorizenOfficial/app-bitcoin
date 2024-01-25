@@ -317,8 +317,7 @@ void btchip_transaction_add_output(unsigned char *hash160Address,
 
 
 int btchip_sign_finalhash(unsigned char* path, size_t path_len, unsigned char *in, unsigned short inlen,
-                                 unsigned char *out, size_t* outlen,
-                                 unsigned char rfc6979) {
+                                 unsigned char *out, size_t* outlen) {
 
     unsigned int info = 0;
 
@@ -335,7 +334,7 @@ int btchip_sign_finalhash(unsigned char* path, size_t path_len, unsigned char *i
             CX_CURVE_SECP256K1,
             bip32Path.path, 
             bip32Path.length,
-            CX_LAST | (rfc6979 ? CX_RND_RFC6979 : CX_RND_TRNG), 
+            CX_LAST | CX_RND_RFC6979,
             CX_SHA256,
             in, 
             inlen, 

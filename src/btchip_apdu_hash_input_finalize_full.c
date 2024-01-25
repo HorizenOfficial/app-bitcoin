@@ -222,20 +222,14 @@ bool handle_output_state() {
 // out should be 32 bytes, even only 20 bytes is significant for output
 int get_pubkey_hash160(unsigned char* keyPath, size_t keyPath_len, unsigned char* out) {
     cx_ecfp_public_key_t public_key;
-    int keyLength;
     if (btchip_get_public_key(keyPath, keyPath_len, public_key.W, NULL)) {
         return -1;
     }
-    if (((N_btchip.bkp.config.options &
-            BTCHIP_OPTION_UNCOMPRESSED_KEYS) != 0)) {
-        keyLength = 65;
-    } else {
-        btchip_compress_public_key_value(public_key.W);
-        keyLength = 33;
-    }
+    btchip_compress_public_key_value(public_key.W);
+
     btchip_public_key_hash160(
         public_key.W,   // IN
-        keyLength,      // INLEN
+        33,             // INLEN
         out             // OUT
     );
     return 0;

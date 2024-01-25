@@ -54,8 +54,7 @@ void btchip_swap_bytes(unsigned char *target, unsigned char *source,
 
 int btchip_sign_finalhash(unsigned char *path, size_t path_len,
                            unsigned char *in, unsigned short inlen,
-                           unsigned char *out, size_t* outlen,
-                           unsigned char rfc6979);
+                           unsigned char *out, size_t* outlen);
 
 void btchip_transaction_add_output(unsigned char *hash160Address,
                                    unsigned char *amount, unsigned char p2sh);
