@@ -33,6 +33,7 @@ APPVERSION = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
 # Application source files
 APP_SOURCE_PATH += src
+APP_SOURCE_PATH += bitcoin_common
 
 ICON_NANOS = icons/nanos_app_$(COIN).gif
 ICON_NANOX = icons/nanox_app_$(COIN).gif
