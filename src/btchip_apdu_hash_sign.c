@@ -51,9 +51,6 @@ unsigned short btchip_apdu_hash_sign() {
         return BTCHIP_SW_INCORRECT_LENGTH;
     }
 
-    // Check state
-    btchip_set_check_internal_structure_integrity(0);
-
     // Zcash special - store parameters for later
 
     if ((btchip_context_D.usingOverwinter) &&
@@ -154,12 +151,9 @@ unsigned short btchip_apdu_hash_sign() {
         }
     }
 
-    // Then discard the transaction and reply
-    btchip_set_check_internal_structure_integrity(1);
     return sw;
 
     discardTransaction:
-        btchip_set_check_internal_structure_integrity(1);
         btchip_context_D.transactionContext.transactionState = BTCHIP_TRANSACTION_NONE;
         return sw;
 }

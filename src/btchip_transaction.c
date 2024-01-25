@@ -145,7 +145,6 @@ unsigned long int transaction_get_varint(void) {
 void transaction_parse(unsigned char parseMode) {
     unsigned char optionP2SHSkip2FA =
         ((N_btchip.bkp.config.options & BTCHIP_OPTION_SKIP_2FA_P2SH) != 0);
-    btchip_set_check_internal_structure_integrity(0);
     BEGIN_TRY {
         TRY {
             for (;;) {
@@ -1002,13 +1001,11 @@ void transaction_parse(unsigned char parseMode) {
             PRINTF("Transaction parse - surprise fail\n");
             btchip_context_D.transactionContext.transactionState =
                 BTCHIP_TRANSACTION_NONE;
-            btchip_set_check_internal_structure_integrity(1);
             THROW(e);
         }
         // before the finally to restore the surrounding context if an exception
         // is raised during finally
         FINALLY {
-            btchip_set_check_internal_structure_integrity(1);
         }
     }
     END_TRY;

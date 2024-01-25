@@ -39,7 +39,6 @@ void btchip_apdu_hash_input_finalize_full_reset(void) {
     memset(btchip_context_D.totalOutputAmount, 0,
               sizeof(btchip_context_D.totalOutputAmount));
     btchip_context_D.changeOutputFound = 0;
-    btchip_set_check_internal_structure_integrity(1);
 }
 
 static bool check_output_displayable() {
@@ -272,7 +271,6 @@ unsigned short btchip_apdu_hash_input_finalize_full_internal(
     }
 
     // Check state
-    btchip_set_check_internal_structure_integrity(0);
     if (btchip_context_D.transactionContext.transactionState !=
             BTCHIP_TRANSACTION_PRESIGN_READY) {
         sw = BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;

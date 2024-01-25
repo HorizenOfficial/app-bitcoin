@@ -57,7 +57,6 @@ unsigned short btchip_apdu_hash_input_start() {
         // Initialize
         btchip_context_D.transactionContext.transactionState =
             BTCHIP_TRANSACTION_NONE;
-        btchip_set_check_internal_structure_integrity(1);
         btchip_context_D.transactionHashOption = TRANSACTION_HASH_BOTH;
     } else if (G_io_apdu_buffer[ISO_OFFSET_P1] != P1_NEXT) {
         return BTCHIP_SW_INCORRECT_P1_P2;
@@ -108,7 +107,6 @@ unsigned short btchip_apdu_hash_input_start() {
             }
             btchip_context_D.overwinterSignReady = 0;
             btchip_context_D.segwitParsedOnce = 0;
-            btchip_set_check_internal_structure_integrity(1);
             // Initialize for screen pairing
             memset(&btchip_context_D.tmpCtx.output, 0,
                       sizeof(btchip_context_D.tmpCtx.output));

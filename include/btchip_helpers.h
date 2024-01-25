@@ -68,9 +68,6 @@ unsigned short btchip_decode_base58_address(unsigned char *in,
 unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_path);
 unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey);
 
-// void btchip_set_check_internal_structure_integrity(unsigned char
-// setParameter);
-#define btchip_set_check_internal_structure_integrity(x)
 void btchip_swap_bytes(unsigned char *target, unsigned char *source,
                        unsigned char size);
 
