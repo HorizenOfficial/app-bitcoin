@@ -28,16 +28,6 @@ unsigned short btchip_apdu_get_trusted_input() {
     unsigned char dataOffset = 0;
     apduLength = G_io_apdu_buffer[ISO_OFFSET_LC];
 
-    SB_CHECK(N_btchip.bkp.config.operationMode);
-    switch (SB_GET(N_btchip.bkp.config.operationMode)) {
-    case BTCHIP_MODE_WALLET:
-    case BTCHIP_MODE_RELAXED_WALLET:
-    case BTCHIP_MODE_SERVER:
-        break;
-    default:
-        return BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
-    }
-
     if (G_io_apdu_buffer[ISO_OFFSET_P1] == GET_TRUSTED_INPUT_P1_FIRST) {
         // Initialize
         btchip_context_D.transactionTargetInput =

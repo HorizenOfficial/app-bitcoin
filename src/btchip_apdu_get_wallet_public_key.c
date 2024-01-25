@@ -101,16 +101,6 @@ unsigned short btchip_apdu_get_wallet_public_key() {
         request_token = read_u32_be(G_io_apdu_buffer, request_token_offset);
     }
 
-    SB_CHECK(N_btchip.bkp.config.operationMode);
-    switch (SB_GET(N_btchip.bkp.config.operationMode)) {
-    case BTCHIP_MODE_WALLET:
-    case BTCHIP_MODE_RELAXED_WALLET:
-    case BTCHIP_MODE_SERVER:
-        break;
-    default:
-        return BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
-    }
-
     if (os_global_pin_is_validated() != BOLOS_UX_OK) {
         return BTCHIP_SW_SECURITY_STATUS_NOT_SATISFIED;
     }

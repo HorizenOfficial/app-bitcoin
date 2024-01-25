@@ -34,16 +34,6 @@ unsigned short btchip_apdu_hash_sign() {
     unsigned char *parameters = G_io_apdu_buffer + ISO_OFFSET_CDATA;
     unsigned short sw = SW_TECHNICAL_DETAILS(0xF);
 
-    SB_CHECK(N_btchip.bkp.config.operationMode);
-    switch (SB_GET(N_btchip.bkp.config.operationMode)) {
-    case BTCHIP_MODE_WALLET:
-    case BTCHIP_MODE_RELAXED_WALLET:
-    case BTCHIP_MODE_SERVER:
-        break;
-    default:
-        return BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
-    }
-
     if ((G_io_apdu_buffer[ISO_OFFSET_P1] != 0) ||
         (G_io_apdu_buffer[ISO_OFFSET_P2] != 0)) {
         return BTCHIP_SW_INCORRECT_P1_P2;

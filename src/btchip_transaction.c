@@ -509,34 +509,10 @@ void transaction_parse(unsigned char parseMode) {
                         }
                         // Handle non-segwit inputs (i.e. InputHashStart 1st APDU's P2==00 && data[0]==0x00)
                         else if (!trustedInputFlag) {
-                            // Only authorized in relaxed wallet and server
-                            // modes
-                            SB_CHECK(N_btchip.bkp.config.operationMode);
-                            switch (SB_GET(N_btchip.bkp.config.operationMode)) {
-                            case BTCHIP_MODE_WALLET:
-                                if (!optionP2SHSkip2FA) {
-                                    PRINTF("Untrusted input not authorized\n");
-                                    goto fail;
-                                }
-                                break;
-                            case BTCHIP_MODE_RELAXED_WALLET:
-                            case BTCHIP_MODE_SERVER:
-                                break;
-                            default:
+                            if (!optionP2SHSkip2FA) {
                                 PRINTF("Untrusted input not authorized\n");
                                 goto fail;
                             }
-                            btchip_context_D.transactionBufferPointer++;
-                            btchip_context_D.transactionDataRemaining--;
-                            check_transaction_available(
-                                36); // prevout : 32 hash + 4 index
-                            transaction_offset_increase(36);
-                            PRINTF("Marking relaxed input\n");
-                            btchip_context_D.transactionContext.relaxed = 1;
-                            /*
-                            PRINTF("Clearing P2SH consumption\n");
-                            btchip_context_D.transactionContext.consumeP2SH = 0;
-                            */
                         }
                         // Handle non-segwit TrustedInput (i.e. InputHashStart 1st APDU's P2==00 & data[0]==0x01)
                         else if (trustedInputFlag && !btchip_context_D.usingSegwit) {
