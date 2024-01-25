@@ -67,8 +67,6 @@ unsigned short btchip_apdu_hash_input_start() {
         (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_CASHADDR) ||
         (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_OVERWINTER) ||
         (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_SAPLING)) {
-        // btchip_context_D.transactionContext.consumeP2SH =
-        // ((N_btchip.bkp.config.options & BTCHIP_OPTION_SKIP_2FA_P2SH) != 0);
         if (G_io_apdu_buffer[ISO_OFFSET_P1] == P1_FIRST) {
             unsigned char usingSegwit =
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT) ||

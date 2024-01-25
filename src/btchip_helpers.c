@@ -157,15 +157,6 @@ unsigned char btchip_output_script_is_op_call(unsigned char *buffer,
     return output_script_is_op_create_or_call(buffer, size, 0xC2);
 }
 
-unsigned char btchip_rng_u8_modulo(unsigned char modulo) {
-    unsigned int rng_max = 256 % modulo;
-    unsigned int rng_limit = 256 - rng_max;
-    unsigned char candidate;
-    while ((candidate = cx_rng_u8()) > rng_limit)
-        ;
-    return (candidate % modulo);
-}
-
 unsigned char btchip_secure_memcmp(const void *buf1, const void *buf2,
                                    unsigned short length) {
     unsigned char error = 0;
@@ -271,30 +262,6 @@ void btchip_swap_bytes(unsigned char *target, unsigned char *source,
     for (i = 0; i < size; i++) {
         target[i] = source[size - 1 - i];
     }
-}
-
-unsigned short btchip_decode_base58_address(unsigned char *in,
-                                            unsigned short inlen,
-                                            unsigned char *out,
-                                            unsigned short outlen) {
-    unsigned char hashBuffer[32];
-    size_t outputLen = outlen;
-    if (btchip_decode_base58((char *)in, inlen, out, &outputLen) < 0) {
-        THROW(EXCEPTION);
-    }
-    outlen = outputLen;
-
-    // Compute hash to verify address
-    cx_hash_sha256(out, outlen - 4, hashBuffer, 32);
-
-    cx_hash_sha256(hashBuffer, 32, hashBuffer, 32);
-
-    if (memcmp(out + outlen - 4, hashBuffer, 4)) {
-        PRINTF("Hash checksum mismatch\n%.*H\n",sizeof(hashBuffer),hashBuffer);
-        THROW(INVALID_CHECKSUM);
-    }
-
-    return outlen;
 }
 
 /*

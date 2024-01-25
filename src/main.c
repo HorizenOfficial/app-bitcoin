@@ -38,9 +38,6 @@
 #include "ui.h"
 #include "lib_standard_app/format.h"
 
-#define __NAME3(a, b, c) a##b##c
-#define NAME3(a, b, c) __NAME3(a, b, c)
-
 unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 bolos_ux_params_t G_ux_params;
 ux_state_t G_ux;
