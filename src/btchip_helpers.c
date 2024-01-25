@@ -20,6 +20,7 @@
 #include "lib_standard_app/crypto_helpers.h"
 #include "bip32.h"
 #include "ledger_assert.h"
+#include "base58.h"
 
 typedef struct bip32_path {
     unsigned char length;
@@ -200,8 +201,8 @@ unsigned short btchip_public_key_to_encoded_base58(
 
     btchip_compute_checksum(tmpBuffer, 20 + versionSize, tmpBuffer + 20 + versionSize);
 
-    outputLen = outlen;
-    if (btchip_encode_base58(tmpBuffer, 24 + versionSize, out, &outputLen) < 0) {
+    outputLen = base58_encode(tmpBuffer, 24 + versionSize, (char *)out, outlen);
+    if (outputLen < 0) {
         THROW(EXCEPTION);
     }
     return outputLen;
