@@ -24,30 +24,20 @@
 #include "btchip_context.h"
 #include "btchip_filesystem_tx.h"
 
+enum btchip_supported_modes_e {
+    BTCHIP_SUPPORTED_MODE_WALLET = 0x01,
+    BTCHIP_SUPPORTED_MODE_RELAXED_WALLET = 0x02,
+    BTCHIP_SUPPORTED_MODE_SERVER = 0x04,
+    BTCHIP_SUPPORTED_MODE_DEVELOPER = 0x08
+};
+
 enum btchip_family_e {
     BTCHIP_FAMILY_BITCOIN = 0x01,
     BTCHIP_FAMILY_PEERCOIN = 0x02,
     BTCHIP_FAMILY_STEALTH = 0x04
 };
 
-struct btchip_config_s {
-    unsigned char options;
-    // unsigned short payToAddressVersion;
-    // unsigned short payToScriptHashVersion;
-    // unsigned char coinFamily;
-    // /** Current Coin ID */
-    // unsigned char coinId[MAX_COIN_ID];
-    // /** Current short Coin ID */
-    // unsigned char shortCoinId[MAX_SHORT_COIN_ID];
-    // /** Current Coin ID length */
-    // unsigned char coinIdLength;
-    // /** Current short Coin ID length */
-    // unsigned char shortCoinIdLength;
-};
-typedef struct btchip_config_s btchip_config_t;
-
 typedef struct btchip_backup_area_s {
-    btchip_config_t config;
     uint8_t trustedinput_key[32];
 } btchip_backup_area_t;
 

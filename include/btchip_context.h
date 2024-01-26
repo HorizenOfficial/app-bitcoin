@@ -139,8 +139,6 @@ struct btchip_tmp_output_s {
 typedef struct btchip_tmp_output_s btchip_tmp_output_t;
 
 struct btchip_context_s {
-    /** Flag if dongle has been halted */
-    secu8 halted;
     /** Index of the output to convert into a trusted input in a transaction */
     unsigned long int trustedInputIndex;
     /** (Integrity protected) transaction context */
