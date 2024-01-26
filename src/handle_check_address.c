@@ -8,7 +8,7 @@
 #include "segwit_addr.h"
 #include <string.h>
 
-bool derive_compressed_public_key(
+static bool derive_compressed_public_key(
     unsigned char* serialized_path, unsigned char serialized_path_length,
     unsigned char* public_key, unsigned char public_key_length) {
     UNUSED(public_key_length);
@@ -23,7 +23,7 @@ bool derive_compressed_public_key(
     return true;
 }
 
-bool get_address_from_compressed_public_key(
+static bool get_address_from_compressed_public_key(
     unsigned char format,
     unsigned char* compressed_pub_key,
     unsigned short payToAddressVersion,
