@@ -65,16 +65,6 @@ unsigned short btchip_apdu_hash_input_start() {
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_SAPLING);
             unsigned char usingCashAddr =
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_CASHADDR);
-            // Request PIN validation
-            // Only request PIN validation (user presence) to start a new
-            // transaction signing flow.
-            // Thus allowing for numerous output to be processed in the
-            // background without
-            // requiring to disable autolock/autopoweroff
-            if (!btchip_context_D.transactionContext.firstSigned &&
-                os_global_pin_is_validated() != BOLOS_UX_OK) {
-                return BTCHIP_SW_SECURITY_STATUS_NOT_SATISFIED;
-            }
             // Master transaction reset
             btchip_context_D.transactionContext.firstSigned = 1;
             btchip_context_D.transactionContext.consumeP2SH = 0;

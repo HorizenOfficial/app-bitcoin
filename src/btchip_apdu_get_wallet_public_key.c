@@ -95,12 +95,6 @@ unsigned short btchip_apdu_get_wallet_public_key() {
         request_token = read_u32_be(G_io_apdu_buffer, request_token_offset);
     }
 
-    if (os_global_pin_is_validated() != BOLOS_UX_OK) {
-        return BTCHIP_SW_SECURITY_STATUS_NOT_SATISFIED;
-    }
-
-    PRINTF("pin ok\n");
-
     unsigned char bip44_enforced = enforce_bip44_coin_type(G_io_apdu_buffer + ISO_OFFSET_CDATA, true);
 
     G_io_apdu_buffer[0] = 65;
