@@ -126,7 +126,6 @@
 #define BITID_DERIVE_MULTIPLE 0xB11E
 
 #include "os.h"
-#include "btchip_secure_value.h"
 
 unsigned short btchip_apdu_get_wallet_public_key(void);
 unsigned short btchip_apdu_get_trusted_input(void);

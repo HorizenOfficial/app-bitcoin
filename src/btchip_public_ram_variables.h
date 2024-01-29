@@ -20,7 +20,6 @@
 
 #include "btchip_config.h"
 
-#include "btchip_secure_value.h"
 #include "btchip_context.h"
 
 extern btchip_context_t btchip_context_D;

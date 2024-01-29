@@ -21,7 +21,6 @@
 
 #include "os.h"
 #include "cx.h"
-#include "btchip_secure_value.h"
 #include "btchip_filesystem_tx.h"
 #ifdef HAVE_NBGL
 #include "nbgl_types.h"

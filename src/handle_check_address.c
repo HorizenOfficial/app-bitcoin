@@ -1,7 +1,6 @@
 #include "handle_check_address.h"
 #include "os.h"
 #include "btchip_helpers.h"
-#include "bip32_path.h"
 #include "btchip_ecc.h"
 #include "btchip_apdu_get_wallet_public_key.h"
 #include "cashaddr.h"

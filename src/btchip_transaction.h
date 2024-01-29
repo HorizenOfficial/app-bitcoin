@@ -18,8 +18,6 @@
 #ifndef _BTCHIP_TRANSACTION_H_
 #define _BTCHIP_TRANSACTION_H_
 
-#include "btchip_secure_value.h"
-
 #define TRANSACTION_HASH_NONE 0x00
 #define TRANSACTION_HASH_FULL 0x01
 #define TRANSACTION_HASH_AUTHORIZATION 0x02

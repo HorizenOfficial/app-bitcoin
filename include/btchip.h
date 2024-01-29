@@ -31,7 +31,6 @@
 
 #define SW_TECHNICAL_DETAILS(x) BTCHIP_SW_TECHNICAL_PROBLEM
 
-#include "btchip_secure_value.h"
 /**
  * Maximum length of BIP32 path serialized.
  */
