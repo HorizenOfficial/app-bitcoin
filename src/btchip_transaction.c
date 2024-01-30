@@ -22,14 +22,18 @@
 #include "read.h"
 #include "write.h"
 
+#ifndef COIN_CONSENSUS_BRANCH_ID
+#define COIN_CONSENSUS_BRANCH_ID 0
+#endif 
+
 #define CONSENSUS_BRANCH_ID_OVERWINTER 0x5ba81b19
 #define CONSENSUS_BRANCH_ID_SAPLING 0x76b809bb
 #define CONSENSUS_BRANCH_ID_ZCLASSIC 0x930b540d
 
 // Check if fOverwintered flag is set and if nVersion is >= 0x03
-#define TRUSTED_INPUT_OVERWINTER ( (G_coin_config->kind == COIN_KIND_ZCASH || \
-                                    G_coin_config->kind == COIN_KIND_ZCLASSIC || \
-                                    G_coin_config->kind == COIN_KIND_KOMODO) && \
+#define TRUSTED_INPUT_OVERWINTER ( (COIN_KIND == COIN_KIND_ZCASH || \
+                                    COIN_KIND == COIN_KIND_ZCLASSIC || \
+                                    COIN_KIND == COIN_KIND_KOMODO) && \
                                     (read_u32_le(btchip_context_D.transactionVersion, 0) & (1<<31)) && \
                                     (read_u32_le(btchip_context_D.transactionVersion, 0) ^ (1<<31)) >= 0x03 \
                                 )
@@ -166,13 +170,13 @@ void transaction_parse(unsigned char parseMode) {
                         if (btchip_context_D.segwitParsedOnce) {
                             uint8_t parameters[16];
                             memmove(parameters, OVERWINTER_PARAM_SIGHASH, 16);
-                            if (G_coin_config->kind == COIN_KIND_ZCLASSIC) {
+                            if (COIN_KIND == COIN_KIND_ZCLASSIC) {
                                 write_u32_le(parameters, 12, CONSENSUS_BRANCH_ID_ZCLASSIC);
                             }
                             else {
                                 write_u32_le(parameters, 12,
                                     btchip_context_D.usingOverwinter == ZCASH_USING_OVERWINTER_SAPLING ?
-                                    (G_coin_config->zcash_consensus_branch_id != 0 ? G_coin_config->zcash_consensus_branch_id : CONSENSUS_BRANCH_ID_SAPLING) : CONSENSUS_BRANCH_ID_OVERWINTER);
+                                    (COIN_CONSENSUS_BRANCH_ID != 0 ? COIN_CONSENSUS_BRANCH_ID : CONSENSUS_BRANCH_ID_SAPLING) : CONSENSUS_BRANCH_ID_OVERWINTER);
                             }
                             if (cx_blake2b_init2_no_throw(&btchip_context_D.transactionHashFull.blake2b, 256, NULL, 0, parameters, 16)) {
                                 goto fail;
@@ -311,11 +315,11 @@ void transaction_parse(unsigned char parseMode) {
                         transaction_offset_increase(4);
                     }
 
-                    if (G_coin_config->flags & FLAG_PEERCOIN_SUPPORT) {
-                        if (((G_coin_config->family ==
+                    if (COIN_FLAGS & FLAG_PEERCOIN_SUPPORT) {
+                        if (((COIN_FAMILY ==
                             BTCHIP_FAMILY_PEERCOIN &&
                             (btchip_context_D.transactionVersion[0] < 3))) ||
-                            ((G_coin_config->family == BTCHIP_FAMILY_STEALTH) &&
+                            ((COIN_FAMILY == BTCHIP_FAMILY_STEALTH) &&
                             (btchip_context_D.transactionVersion[0] < 2))) {
                             // Timestamp
                             check_transaction_available(4);

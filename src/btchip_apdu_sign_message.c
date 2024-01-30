@@ -82,10 +82,8 @@ unsigned short btchip_apdu_sign_message_internal() {
                 sw = BTCHIP_SW_INCORRECT_DATA;
                 goto discard;
             }
-            btchip_context_D.transactionSummary.payToAddressVersion =
-                G_coin_config->p2pkh_version;
-            btchip_context_D.transactionSummary.payToScriptHashVersion =
-                G_coin_config->p2sh_version;
+            btchip_context_D.transactionSummary.payToAddressVersion = COIN_P2PKH_VERSION;
+            btchip_context_D.transactionSummary.payToScriptHashVersion = COIN_P2SH_VERSION;
             memmove(
                     btchip_context_D.transactionSummary.keyPath,
                     G_io_apdu_buffer + offset, MAX_BIP32_PATH_LENGTH);
@@ -117,14 +115,14 @@ unsigned short btchip_apdu_sign_message_internal() {
                 goto discard;
             }
             chunkLength =
-                strlen(G_coin_config->coinid) + SIGNMAGIC_LENGTH;
+                strlen(COIN_COINID) + SIGNMAGIC_LENGTH;
             if (cx_hash_no_throw(&btchip_context_D.transactionHashFull.sha256.header, 0,
                         &chunkLength, 1, NULL, 0)) {
                 goto discard;
             }
             if (cx_hash_no_throw(&btchip_context_D.transactionHashFull.sha256.header, 0,
-                        (uint8_t *)G_coin_config->coinid,
-                        strlen(G_coin_config->coinid), NULL, 0)) {
+                        (uint8_t *)COIN_COINID,
+                        strlen(COIN_COINID), NULL, 0)) {
                 sw = SW_TECHNICAL_DETAILS(0x0F);
                 goto discard;
             }

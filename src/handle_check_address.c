@@ -86,7 +86,7 @@ static int os_strcmp(const char* s1, const char* s2) {
     return memcmp(s1, s2, size);
 }
 
-int handle_check_address(check_address_parameters_t* params, btchip_altcoin_config_t* coin_config) {
+int handle_check_address(check_address_parameters_t* params) {
     unsigned char compressed_public_key[33];
     PRINTF("Params on the address %d\n",(unsigned int)params);
     PRINTF("Address to check %s\n",params->address_to_check);
@@ -107,9 +107,9 @@ int handle_check_address(check_address_parameters_t* params, btchip_altcoin_conf
     if (!get_address_from_compressed_public_key(
         params->address_parameters[0],
         compressed_public_key,
-        coin_config->p2pkh_version,
-        coin_config->p2sh_version,
-        coin_config->native_segwit_prefix,
+        COIN_P2PKH_VERSION,
+        COIN_P2SH_VERSION,
+        COIN_NATIVE_SEGWIT_PREFIX,
         address,
         sizeof(address))) {
         PRINTF("Can't create address from given public key\n");

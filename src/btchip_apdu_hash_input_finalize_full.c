@@ -70,10 +70,10 @@ static bool check_output_displayable() {
     isOpCall =
         btchip_output_script_is_op_call(btchip_context_D.currentOutput + 8,
           sizeof(btchip_context_D.currentOutput) - 8);
-    if (((G_coin_config->kind == COIN_KIND_HYDRA) &&
+    if (((COIN_KIND == COIN_KIND_HYDRA) &&
          !btchip_output_script_is_regular(btchip_context_D.currentOutput + 8) &&
          !isP2sh && !(nullAmount && isOpReturn) && !isOpCreate && !isOpCall) ||
-        (!(G_coin_config->kind == COIN_KIND_HYDRA) &&
+        (!(COIN_KIND == COIN_KIND_HYDRA) &&
          !btchip_output_script_is_regular(btchip_context_D.currentOutput + 8) &&
          !isP2sh && !(nullAmount && isOpReturn))) {
         PRINTF("Error : Unrecognized output script");
@@ -99,7 +99,7 @@ static bool check_output_displayable() {
             btchip_public_key_hash160(changeSegwit, 22, changeSegwit);
             if (memcmp(btchip_context_D.currentOutput + 8 + addressOffset,
                           changeSegwit, 20) == 0) {
-                if (G_coin_config->flags & FLAG_SEGWIT_CHANGE_SUPPORT) {
+                if (COIN_FLAGS & FLAG_SEGWIT_CHANGE_SUPPORT) {
                     changeFound = true;
                 } else {
                     // Attempt to avoid fatal failures on Bitcoin Cash
@@ -451,10 +451,8 @@ return_OK:
                     sizeof(btchip_transaction_summary_t));
         }
 
-        transactionSummary->payToAddressVersion =
-            G_coin_config->p2pkh_version;
-        transactionSummary->payToScriptHashVersion =
-            G_coin_config->p2sh_version;
+        transactionSummary->payToAddressVersion = COIN_P2PKH_VERSION;
+        transactionSummary->payToScriptHashVersion = COIN_P2SH_VERSION;
 
         // Generate new nonce
 

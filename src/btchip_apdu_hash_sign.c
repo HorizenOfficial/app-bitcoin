@@ -26,6 +26,10 @@
 
 #define SIGHASH_ALL 0x01
 
+#ifndef COIN_FORKID
+#define COIN_FORKID 0
+#endif 
+
 unsigned short btchip_apdu_hash_sign() {
     unsigned long int lockTime;
     uint32_t sighashType;
@@ -94,14 +98,15 @@ unsigned short btchip_apdu_hash_sign() {
     btchip_context_D.transactionSummary.sighashType = sighashType;
 
     // if bitcoin cash OR forkid is set, then use the fork id
-    if (G_coin_config->kind == COIN_KIND_BITCOIN_CASH ||
-            (G_coin_config->forkid)) {
+    if (COIN_KIND == COIN_KIND_BITCOIN_CASH ||
+            (COIN_FORKID)) {
 #define SIGHASH_FORKID 0x40
         if (sighashType != (SIGHASH_ALL | SIGHASH_FORKID)) {
             sw = BTCHIP_SW_INCORRECT_DATA;
             goto discardTransaction;
         }
-        sighashType |= (G_coin_config->forkid << 8);
+        sighashType |= (COIN_FORKID << 8);
+
     } else {
         if (sighashType != SIGHASH_ALL) {
             sw = BTCHIP_SW_INCORRECT_DATA;

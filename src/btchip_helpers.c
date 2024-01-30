@@ -68,7 +68,7 @@ const unsigned char ZEN_OUTPUT_SCRIPT_POST[] = {
 };                    // BIP0115 Replay Protection
 
 unsigned char btchip_output_script_is_regular(unsigned char *buffer) {
-    if (G_coin_config->native_segwit_prefix) {
+    if (COIN_NATIVE_SEGWIT_PREFIX) {
         if ((memcmp(buffer, TRANSACTION_OUTPUT_SCRIPT_P2WPKH_PRE,
                        sizeof(TRANSACTION_OUTPUT_SCRIPT_P2WPKH_PRE)) == 0) ||
             (memcmp(buffer, TRANSACTION_OUTPUT_SCRIPT_P2WSH_PRE,
@@ -76,7 +76,7 @@ unsigned char btchip_output_script_is_regular(unsigned char *buffer) {
             return 1;
         }
     }
-    if (G_coin_config->kind == COIN_KIND_HORIZEN) {
+    if (COIN_KIND == COIN_KIND_HORIZEN) {
         if ((memcmp(buffer, ZEN_OUTPUT_SCRIPT_PRE,
                        sizeof(ZEN_OUTPUT_SCRIPT_PRE)) == 0) &&
             (memcmp(buffer + sizeof(ZEN_OUTPUT_SCRIPT_PRE) + 20,
@@ -97,7 +97,7 @@ unsigned char btchip_output_script_is_regular(unsigned char *buffer) {
 }
 
 unsigned char btchip_output_script_is_p2sh(unsigned char *buffer) {
-    if (G_coin_config->kind == COIN_KIND_HORIZEN) {
+    if (COIN_KIND == COIN_KIND_HORIZEN) {
         if ((memcmp(buffer, ZEN_TRANSACTION_OUTPUT_SCRIPT_P2SH_PRE,
                        sizeof(ZEN_TRANSACTION_OUTPUT_SCRIPT_P2SH_PRE)) == 0) &&
             (memcmp(buffer + sizeof(ZEN_TRANSACTION_OUTPUT_SCRIPT_P2SH_PRE) + 20,
@@ -118,7 +118,7 @@ unsigned char btchip_output_script_is_p2sh(unsigned char *buffer) {
 }
 
 unsigned char btchip_output_script_is_native_witness(unsigned char *buffer) {
-    if (G_coin_config->native_segwit_prefix) {
+    if (COIN_NATIVE_SEGWIT_PREFIX) {
         if ((memcmp(buffer, TRANSACTION_OUTPUT_SCRIPT_P2WPKH_PRE,
                        sizeof(TRANSACTION_OUTPUT_SCRIPT_P2WPKH_PRE)) == 0) ||
             (memcmp(buffer, TRANSACTION_OUTPUT_SCRIPT_P2WSH_PRE,
@@ -130,7 +130,7 @@ unsigned char btchip_output_script_is_native_witness(unsigned char *buffer) {
 }
 
 unsigned char btchip_output_script_is_op_return(unsigned char *buffer) {
-    if (G_coin_config->kind == COIN_KIND_BITCOIN_CASH) {
+    if (COIN_KIND == COIN_KIND_BITCOIN_CASH) {
         return ((buffer[1] == 0x6A) || ((buffer[1] == 0x00) && (buffer[2] == 0x6A)));
     }
     else {
@@ -239,9 +239,9 @@ unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_pa
     }
 
     // If the coin type doesn't match, return a warning
-    if ((G_coin_config->bip44_coin_type != 0) &&
-        (((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) != G_coin_config->bip44_coin_type) &&
-          ((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) != G_coin_config->bip44_coin_type2))) {
+    if ((BIP44_COIN_TYPE != 0) &&
+        (((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) != BIP44_COIN_TYPE) &&
+          ((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) != BIP44_COIN_TYPE_2))) {
         return 1;
     }
 
@@ -265,7 +265,7 @@ unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey)
     bip32PathInt.length = bip32Path[0];
 
     // No enforcement required
-    if (G_coin_config->bip44_coin_type == 0) {
+    if (BIP44_COIN_TYPE == 0) {
         return 1;
     }
     // Path is too short - always require a user validation if signing
@@ -284,8 +284,8 @@ unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey)
         return for_pubkey;
     }
 
-    if  (((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) == G_coin_config->bip44_coin_type) ||
-        ((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) == G_coin_config->bip44_coin_type2)) {
+    if  (((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) == BIP44_COIN_TYPE) ||
+        ((bip32PathInt.path[BIP44_COIN_TYPE_OFFSET]^0x80000000) == BIP44_COIN_TYPE_2)) {
         // Valid BIP 44 path
         return 1;
     }

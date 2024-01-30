@@ -84,7 +84,7 @@ static void settings_control_cb(int token, uint8_t index) {
 }
 
 static void display_settings_menu(void) {
-  snprintf(text, sizeof(text), "%s settings", G_coin_config->name);
+  snprintf(text, sizeof(text), "%s settings", COIN_COINID_NAME);
 
   nbgl_useCaseSettings(text, PAGE_START, NB_PAGE_SETTING, IS_TOUCHABLE,
                        ui_idle_flow, settings_navigation_cb,
@@ -92,7 +92,7 @@ static void display_settings_menu(void) {
 }
 
 void ui_idle_flow(void) {
-  nbgl_useCaseHome(G_coin_config->name, &G_coin_config->img_nbgl, NULL, true,
+  nbgl_useCaseHome(COIN_COINID_NAME, &COIN_ICON, NULL, true,
                    display_settings_menu, quit_cb);
 }
 #endif // HAVE_NBGL
