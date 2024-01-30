@@ -19,6 +19,7 @@
 #include "btchip_apdu_constants.h"
 #include "btchip_bagl_extensions.h"
 #include "read.h"
+#include "sign_message_helpers.h"
 
 #define P1_PREPARE 0x00
 #define P1_SIGN 0x80
@@ -26,35 +27,9 @@
 #define P2_FIRST 0x01
 #define P2_OTHER 0x80
 
-#define BITID_NONE 0
-#define BITID_POWERCYCLE 1
-#define BITID_MULTIPLE 2
-
-//#define SLIP_13 0x8000000D
-
-unsigned short btchip_compute_hash(void);
-
-unsigned char checkBitId(unsigned char *bip32Path) {
-    unsigned char i;
-    unsigned char bip32PathLength = bip32Path[0];
-    bip32Path++;
-    for (i = 0; i < bip32PathLength; i++) {
-        unsigned short account = read_u32_be(bip32Path, 0);
-        bip32Path += 4;
-
-        if (account == BITID_DERIVE) {
-            return BITID_POWERCYCLE;
-        }
-        if (account == BITID_DERIVE_MULTIPLE) {
-            return BITID_MULTIPLE;
-        }
-    }
-    return BITID_NONE;
-}
-
 // TODO : support longer messages
 
-unsigned short btchip_apdu_sign_message_internal() {
+static unsigned short btchip_apdu_sign_message_internal(void) {
     unsigned short sw = BTCHIP_SW_OK;
     unsigned char p1 = G_io_apdu_buffer[ISO_OFFSET_P1];
     unsigned char p2 = G_io_apdu_buffer[ISO_OFFSET_P2];
@@ -105,15 +80,8 @@ unsigned short btchip_apdu_sign_message_internal() {
                 goto discard;
             }
             btchip_context_D.hashedMessageLength = 0;
-            if (cx_sha256_init_no_throw(&btchip_context_D.transactionHashFull.sha256)) {
-                sw = SW_TECHNICAL_DETAILS(0x0F);
-                goto discard;
-            }
-            if (cx_sha256_init_no_throw(
-                        &btchip_context_D.transactionHashAuthorization)) {
-                sw = SW_TECHNICAL_DETAILS(0x0F);
-                goto discard;
-            }
+            cx_sha256_init_no_throw(&btchip_context_D.transactionHashFull.sha256);
+            cx_sha256_init_no_throw(&btchip_context_D.transactionHashAuthorization);
             chunkLength =
                 strlen(COIN_COINID) + SIGNMAGIC_LENGTH;
             if (cx_hash_no_throw(&btchip_context_D.transactionHashFull.sha256.header, 0,
@@ -215,8 +183,8 @@ unsigned short btchip_apdu_sign_message_internal() {
             sw = BTCHIP_SW_INCORRECT_DATA;
             goto discard;
         }
-        if (checkBitId(btchip_context_D.transactionSummary.keyPath) != BITID_NONE) {
-            sw = btchip_compute_hash();
+        if (message_check_bit_id(btchip_context_D.transactionSummary.keyPath) != BITID_NONE) {
+            sw = message_compute_hash();
         } else {
             btchip_context_D.io_flags |= IO_ASYNCH_REPLY;
             return BTCHIP_SW_OK;
@@ -241,40 +209,10 @@ unsigned short btchip_apdu_sign_message() {
     return sw;
 }
 
-unsigned short btchip_compute_hash() {
-    unsigned char hash[32];
-    unsigned short sw = BTCHIP_SW_OK;
-
-    btchip_context_D.outLength = 0;
-    if (cx_hash_no_throw(&btchip_context_D.transactionHashFull.sha256.header, CX_LAST, hash,
-                0, hash, 32)) {
-        goto discard;
-    }
-            
-    if (cx_hash_sha256(hash, sizeof(hash), hash, 32) == 0) {
-        goto discard;
-    }
-
-    size_t out_len = 100;
-    btchip_sign_finalhash(
-            btchip_context_D.transactionSummary.keyPath,
-            sizeof(btchip_context_D.transactionSummary.keyPath),
-            hash, sizeof(hash), // IN
-            G_io_apdu_buffer, &out_len);                        // OUT
-    btchip_context_D.outLength = G_io_apdu_buffer[1] + 2;
-            memset(&btchip_context_D.transactionSummary, 0,
-                      sizeof(btchip_transaction_summary_t));
-    return sw;
-
-    discard: 
-            sw = SW_TECHNICAL_DETAILS(0x0F);
-            return sw;
-}
-
 void btchip_bagl_user_action_message_signing(unsigned char confirming) {
     unsigned short sw;
     if (confirming) {
-        sw = btchip_compute_hash();
+        sw = message_compute_hash();
     } else {
         sw = BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
     }
