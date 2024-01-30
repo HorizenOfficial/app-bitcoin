@@ -220,11 +220,13 @@ void btchip_swap_bytes(unsigned char *target, unsigned char *source,
 Checks if the values of a derivation path are within "normal" (arbitrary) ranges:
 Account < 100, change == 1 or 0, address index < 50000
 Returns 1 if the path is unusual, or not compliant with BIP44*/
-unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_path) {
+unsigned char bip44_derivation_guard(unsigned char *bip32Path, size_t bip32Path_length, bool is_change_path) {
 
     bip32_path_t bip32PathInt;
 
     bip32PathInt.length = bip32Path[0];
+
+    LEDGER_ASSERT(bip32PathInt.length <= bip32Path_length, "Wrong Size %d %d", bip32PathInt.length, bip32Path_length);
 
     if (!bip32_path_read(bip32Path + 1, MAX_BIP32_PATH_LENGTH, bip32PathInt.path, bip32PathInt.length)) {
         return 1;
@@ -259,7 +261,7 @@ unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_pa
 Only enforce the structure or coin type for consumed UTXOs or a public address
 Returns 0 if the path is non compliant, or 1 if compliant
 */
-unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey) {
+unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, size_t bip32Path_length, bool for_pubkey) {
     bip32_path_t bip32PathInt;
 
     bip32PathInt.length = bip32Path[0];
@@ -272,6 +274,8 @@ unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey)
     if (bip32PathInt.length < 2) {
         return for_pubkey;
     }
+
+    LEDGER_ASSERT(bip32PathInt.length <= bip32Path_length, "Wrong Size %d %d", bip32PathInt.length, bip32Path_length);
 
     if (!bip32_path_read(bip32Path + 1, MAX_BIP32_PATH_LENGTH, bip32PathInt.path, bip32PathInt.length)) {
         return 1;
@@ -326,6 +330,8 @@ int btchip_sign_finalhash(unsigned char* path, size_t path_len, unsigned char *i
     bip32_path_t bip32Path;
     bip32Path.length = path[0];
 
+    LEDGER_ASSERT(bip32Path.length <= path_len, "Wrong Size %d %d", bip32Path.length, path_len);
+
     if (!bip32_path_read(path + 1, MAX_BIP32_PATH_LENGTH, bip32Path.path, bip32Path.length)) {
         return -1;
     }
@@ -358,6 +364,8 @@ int btchip_get_public_key(unsigned char* keyPath, size_t keyPath_len, uint8_t ra
     bip32_path_t bip32Path;
 
     bip32Path.length = keyPath[0];
+
+    LEDGER_ASSERT(bip32Path.length <= keyPath_len, "Wrong Size %d %d", bip32Path.length, keyPath_len);
 
     if (!bip32_path_read(keyPath + 1, MAX_BIP32_PATH_LENGTH, bip32Path.path, bip32Path.length)) {
         return -1;

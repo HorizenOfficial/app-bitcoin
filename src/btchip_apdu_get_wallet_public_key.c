@@ -87,7 +87,7 @@ unsigned short btchip_apdu_get_wallet_public_key() {
         return BTCHIP_SW_INCORRECT_LENGTH;
     }
     if (display) {
-        is_derivation_path_unusual = set_key_path_to_display(G_io_apdu_buffer + ISO_OFFSET_CDATA);
+        is_derivation_path_unusual = set_key_path_to_display(G_io_apdu_buffer + ISO_OFFSET_CDATA, MAX_BIP32_PATH);
     }
 
     if(display_request_token){
@@ -95,7 +95,7 @@ unsigned short btchip_apdu_get_wallet_public_key() {
         request_token = read_u32_be(G_io_apdu_buffer, request_token_offset);
     }
 
-    unsigned char bip44_enforced = enforce_bip44_coin_type(G_io_apdu_buffer + ISO_OFFSET_CDATA, true);
+    unsigned char bip44_enforced = enforce_bip44_coin_type(G_io_apdu_buffer + ISO_OFFSET_CDATA, MAX_BIP32_PATH_LENGTH, true);
 
     G_io_apdu_buffer[0] = 65;
     keyLength = get_public_key_chain_code(G_io_apdu_buffer + ISO_OFFSET_CDATA, MAX_BIP32_PATH_LENGTH, G_io_apdu_buffer + 1, chainCode);

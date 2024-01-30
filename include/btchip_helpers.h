@@ -46,8 +46,8 @@ unsigned short btchip_public_key_to_encoded_base58(
     unsigned char *in, unsigned short inlen, unsigned char *out,
     unsigned short outlen, unsigned short version, unsigned char alreadyHashed);
 
-unsigned char bip44_derivation_guard(unsigned char *bip32Path, bool is_change_path);
-unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, bool for_pubkey);
+unsigned char bip44_derivation_guard(unsigned char *bip32Path, size_t bip32Path_length, bool is_change_path);
+unsigned char enforce_bip44_coin_type(unsigned char *bip32Path, size_t bip32Path_length, bool for_pubkey);
 
 void btchip_swap_bytes(unsigned char *target, unsigned char *source,
                        unsigned char size);

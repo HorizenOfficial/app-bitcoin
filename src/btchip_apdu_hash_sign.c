@@ -126,9 +126,9 @@ unsigned short btchip_apdu_hash_sign() {
     }
 
     // Check if the path needs to be enforced
-    if (!enforce_bip44_coin_type(btchip_context_D.transactionSummary.keyPath, false)) {
+    if (!enforce_bip44_coin_type(btchip_context_D.transactionSummary.keyPath, sizeof(btchip_context_D.transactionSummary.keyPath), false)) {
         btchip_context_D.io_flags |= IO_ASYNCH_REPLY;
-        btchip_bagl_request_sign_path_approval(btchip_context_D.transactionSummary.keyPath);
+        btchip_bagl_request_sign_path_approval(btchip_context_D.transactionSummary.keyPath, sizeof(btchip_context_D.transactionSummary.keyPath));
     }
     else {
         // Sign immediately

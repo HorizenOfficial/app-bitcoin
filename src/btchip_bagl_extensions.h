@@ -40,18 +40,18 @@ void btchip_bagl_confirm_message_signature(void);
 void btchip_bagl_user_action_message_signing(unsigned char confirming);
 
 // Public key display
-uint8_t set_key_path_to_display(unsigned char* keyPath);
+uint8_t set_key_path_to_display(unsigned char* keyPath, size_t keyPathLen);
 void btchip_bagl_display_public_key(uint8_t is_derivation_path_unusual);
 void btchip_bagl_user_action_display(unsigned char confirming);
 
 void btchip_bagl_request_pubkey_approval(void);
-void btchip_bagl_request_change_path_approval(unsigned char* change_path);
+void btchip_bagl_request_change_path_approval(unsigned char* change_path, size_t change_path_len);
 
 // UI to confirm processing of tx with segwit inputs
 void btchip_bagl_request_segwit_input_approval(void);
 
 // UI to confirm signing path
-void btchip_bagl_request_sign_path_approval(unsigned char *derivation_path);
+void btchip_bagl_request_sign_path_approval(unsigned char *derivation_path, size_t derivation_path_len);
 void btchip_bagl_user_action_signtx(unsigned char confirming, unsigned char direct);
 
 

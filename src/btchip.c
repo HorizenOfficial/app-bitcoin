@@ -446,7 +446,7 @@ void btchip_bagl_confirm_message_signature(void) {
 
 uint8_t set_key_path_to_display(unsigned char* keyPath, size_t keyPathLen) {
     bip32_path_format((uint32_t*)keyPath, keyPathLen, vars.tmp_warning.derivation_path, sizeof(vars.tmp_warning.derivation_path));
-    return bip44_derivation_guard(keyPath, false);
+    return bip44_derivation_guard(keyPath, keyPathLen, false);
 }
 
 void btchip_bagl_display_public_key(uint8_t is_derivation_path_unusual) {
