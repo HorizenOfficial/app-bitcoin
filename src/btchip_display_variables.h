@@ -1,3 +1,4 @@
+#include "os.h"
 #ifndef _BTCHIP_DISPLAY_VARIABLES_H_
 #define _BTCHIP_DISPLAY_VARIABLES_H_
 
@@ -12,6 +13,7 @@ typedef struct swap_data_s {
         // number of already signed input in the transaction, to compare with
         // totalNumberOfInputs and exit properly
         int alreadySignedInputs;
+        int initialized;
         unsigned char amount[8];
         unsigned char fees[8];
         char destination_address[65];

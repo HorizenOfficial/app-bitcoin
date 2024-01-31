@@ -2,11 +2,11 @@
 #include "btchip_bcd.h"
 #include <string.h>
 
-int handle_get_printable_amount(get_printable_amount_parameters_t* params) {
+void swap_handle_get_printable_amount(get_printable_amount_parameters_t* params) {
     params->printable_amount[0] = 0;
     if (params->amount_length > 8) {
         PRINTF("Amount is too big");
-        return 0;
+        return;
     }
     unsigned char amount[8];
     memset(amount, 0, 8);
@@ -17,5 +17,5 @@ int handle_get_printable_amount(get_printable_amount_parameters_t* params) {
     int res_length = btchip_convert_hex_amount_to_displayable_no_globals(amount, COIN_FLAGS, (uint8_t *)params->printable_amount + coin_name_length + 1);
     params->printable_amount[res_length + coin_name_length + 1] = '\0';
 
-    return 1;
+    return;
 }

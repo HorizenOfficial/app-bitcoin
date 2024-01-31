@@ -4,9 +4,9 @@
 #include "swap_lib_calls.h"
 #include "btchip_context.h"
 
-bool copy_transaction_parameters(create_transaction_parameters_t* sign_transaction_params);
+bool swap_copy_transaction_parameters(create_transaction_parameters_t* sign_transaction_params);
 
-void handle_swap_sign_transaction(void);
+void swap_handle_swap_sign_transaction(void);
 
 void __attribute__((noreturn)) finalize_exchange_sign_transaction(bool is_success);
 

@@ -81,26 +81,42 @@ static bool get_address_from_compressed_public_key(
     return true;
 }
 
-static int os_strcmp(const char* s1, const char* s2) {
-    size_t size = strlen(s1) + 1;
-    return memcmp(s1, s2, size);
-}
+void swap_handle_check_address(check_address_parameters_t* params) {
+    PRINTF("Inside swap_handle_check_address\n");
+    params->result = 0;
 
-int handle_check_address(check_address_parameters_t* params) {
-    unsigned char compressed_public_key[33];
-    PRINTF("Params on the address %d\n",(unsigned int)params);
-    PRINTF("Address to check %s\n",params->address_to_check);
-    PRINTF("Inside handle_check_address\n");
+    if (params->address_parameters == NULL) {
+        PRINTF("derivation path expected\n");
+        return;
+    }
+
+    if (params->address_to_check == NULL) {
+        PRINTF("Address to check expected\n");
+        return;
+    }
+    PRINTF("Address to check %s\n", params->address_to_check);
+
+    if (params->extra_id_to_check == NULL) {
+        PRINTF("extra_id_to_check expected\n");
+        return;
+    } else if (params->extra_id_to_check[0] != '\0') {
+        PRINTF("extra_id_to_check expected empty, not '%s'\n", params->extra_id_to_check);
+        return;
+    }
+
     if (params->address_to_check == 0) {
         PRINTF("Address to check == 0\n");
-        return 0;
+        return;
     }
+
+    unsigned char compressed_public_key[33];
     if (!derive_compressed_public_key(
         params->address_parameters + 1,
         params->address_parameters_length - 1,
         compressed_public_key,
         sizeof(compressed_public_key))) {
-        return 0;
+        PRINTF("Failed to derive public key\n");
+        return;
     }
 
     char address[51];
@@ -113,12 +129,16 @@ int handle_check_address(check_address_parameters_t* params) {
         address,
         sizeof(address))) {
         PRINTF("Can't create address from given public key\n");
-        return 0;
+        return;
     }
-    if (os_strcmp(address,params->address_to_check) != 0) {
-        PRINTF("Addresses don't match\n");
-        return 0;
+
+    if (strcmp(params->address_to_check, address) != 0) {
+        PRINTF("Address %s != %s\n", params->address_to_check, address);
+        return;
     }
+
     PRINTF("Addresses match\n");
-    return 1;
+
+    params->result = 1;
+    return;
 }
