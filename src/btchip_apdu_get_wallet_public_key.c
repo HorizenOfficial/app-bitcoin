@@ -24,6 +24,7 @@
 #include "cashaddr.h"
 #include "btchip_apdu_get_wallet_public_key.h"
 #include "read.h"
+#include "swap.h"
 
 int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, unsigned char* publicKey, unsigned char* chainCode) {
     uint8_t public_key[65];
@@ -53,7 +54,7 @@ unsigned short btchip_apdu_get_wallet_public_key() {
     bool segwit = (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_SEGWIT);
     bool nativeSegwit = (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NATIVE_SEGWIT);
     bool cashAddr = (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_CASHADDR);
-    if (display && btchip_context_D.called_from_swap) {
+    if (display && G_called_from_swap) {
         return BTCHIP_SW_INCORRECT_DATA;
     }
     switch (G_io_apdu_buffer[ISO_OFFSET_P1]) {

@@ -20,6 +20,7 @@
 #include "btchip_bagl_extensions.h"
 #include "read.h"
 #include "sign_message_helpers.h"
+#include "swap.h"
 
 #define P1_PREPARE 0x00
 #define P1_SIGN 0x80
@@ -199,7 +200,7 @@ static unsigned short btchip_apdu_sign_message_internal(void) {
 }
 
 unsigned short btchip_apdu_sign_message() {
-    if (btchip_context_D.called_from_swap) {
+    if (G_called_from_swap) {
         return BTCHIP_SW_SECURITY_STATUS_NOT_SATISFIED;
     }
     unsigned short sw = btchip_apdu_sign_message_internal();

@@ -24,6 +24,7 @@
 #include "ui.h"
 #include "lib_standard_app/crypto_helpers.h"
 #include "read.h"
+#include "swap.h"
 
 #define FINALIZE_P1_MORE 0x00
 #define FINALIZE_P1_LAST 0x80
@@ -303,7 +304,7 @@ return_OK:
 
         // if the bip44 change path provided is not canonical or its index are unsual, ask for user approval
         if(bip44_derivation_guard(transactionSummary->keyPath, sizeof(transactionSummary->keyPath), true)) {
-            if (btchip_context_D.called_from_swap) {
+            if (G_called_from_swap) {
                 PRINTF("In swap mode only standart path is allowed\n");
                 sw = BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
                 goto discardTransaction;

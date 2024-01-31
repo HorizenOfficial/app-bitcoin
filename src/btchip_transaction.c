@@ -21,6 +21,7 @@
 #include "ledger_assert.h"
 #include "read.h"
 #include "write.h"
+#include "swap.h"
 
 #ifndef COIN_CONSENSUS_BRANCH_ID
 #define COIN_CONSENSUS_BRANCH_ID 0
@@ -332,7 +333,7 @@ void transaction_parse(unsigned char parseMode) {
                         .transactionRemainingInputsOutputs =
                         transaction_get_varint();
                     PRINTF("Number of inputs : " DEBUG_LONG "\n",btchip_context_D.transactionContext.transactionRemainingInputsOutputs);
-                    if (btchip_context_D.called_from_swap && parseMode == PARSE_MODE_SIGNATURE) {
+                    if (G_called_from_swap && parseMode == PARSE_MODE_SIGNATURE) {
                         // remember number of inputs to know when to exit from library
                         // we will count number of already signed inputs and compare with this value
                         // As there are a lot of different states in which we can have different number of input

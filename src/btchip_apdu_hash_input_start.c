@@ -18,6 +18,7 @@
 #include "btchip_internal.h"
 #include "btchip_apdu_constants.h"
 #include "btchip_bagl_extensions.h"
+#include "swap.h"
 
 #define P1_FIRST 0x00
 #define P1_NEXT 0x80
@@ -106,7 +107,7 @@ unsigned short btchip_apdu_hash_input_start() {
         && IS_INPUT()
         && !IS_INPUT_TRUSTED())
     {
-        if(btchip_context_D.called_from_swap){
+        if(G_called_from_swap){
             /* There is no point in displaying a warning when the app is signing
             in silent mode, as its UI is hidden behind the exchange app*/
             return BTCHIP_SW_SWAP_WITHOUT_TRUSTED_INPUTS;

@@ -38,6 +38,7 @@
 #include "read.h"
 #include "write.h"
 #include "bip32.h"
+#include "swap.h"
 
 unsigned short io_exchange_al(unsigned char channel, unsigned short tx_len) {
     switch (channel & ~(IO_FLAGS)) {
@@ -412,7 +413,7 @@ unsigned int btchip_silent_confirm_single_output() {
 }
 
 unsigned int btchip_bagl_confirm_single_output(void) {
-    if (btchip_context_D.called_from_swap) {
+    if (G_called_from_swap) {
         return btchip_silent_confirm_single_output();
     }
     if (!prepare_single_output()) {
@@ -424,7 +425,7 @@ unsigned int btchip_bagl_confirm_single_output(void) {
 }
 
 unsigned int btchip_bagl_finalize_tx(void) {
-    if (btchip_context_D.called_from_swap) {
+    if (G_called_from_swap) {
         return check_fee_swap();
     }
 
@@ -545,7 +546,7 @@ void app_dispatch(void) {
 #endif // IO_APP_ACTIVITY
 
 sendSW:
-    if (btchip_context_D.called_from_swap) {
+    if (G_called_from_swap) {
         btchip_context_D.io_flags &= ~IO_ASYNCH_REPLY;
         if(btchip_context_D.sw != BTCHIP_SW_OK) {
             vars.swap_data.should_exit = 1;
@@ -576,7 +577,7 @@ void app_main(void) {
 
         // memset(G_io_apdu_buffer, 0, 255); // paranoia
 
-        if (btchip_context_D.called_from_swap && vars.swap_data.should_exit) {
+        if (G_called_from_swap && vars.swap_data.should_exit) {
             btchip_context_D.io_flags |= IO_RETURN_AFTER_TX;
         }
 
@@ -586,7 +587,7 @@ void app_main(void) {
                         // use the previous outlength as the reply
                         btchip_context_D.outLength);
 
-        if (btchip_context_D.called_from_swap && vars.swap_data.should_exit) {
+        if (G_called_from_swap && vars.swap_data.should_exit) {
             finalize_exchange_sign_transaction(btchip_context_D.sw == BTCHIP_SW_OK);
         }
 

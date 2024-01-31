@@ -23,6 +23,7 @@
 #include "ledger_assert.h"
 #include "write.h"
 #include "read.h"
+#include "swap.h"
 
 #define SIGHASH_ALL 0x01
 
@@ -135,7 +136,7 @@ unsigned short btchip_apdu_hash_sign() {
         btchip_bagl_user_action_signtx(1, 1);
     }
     sw = BTCHIP_SW_OK;
-    if (btchip_context_D.called_from_swap) {
+    if (G_called_from_swap) {
         // if we signed all outputs we should exit,
         // but only after sending response, so lets raise the
         // vars.swap_data.should_exit flag and check it on timer later
