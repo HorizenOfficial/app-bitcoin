@@ -31,10 +31,6 @@ void btchip_context_init() {
     btchip_context_D.changeOutputFound = 0;
     btchip_context_D.segwitWarningSeen = 0;
 
-    if (N_btchip.config_valid != 0x01) {
-        btchip_autosetup();
-    }
-
     if (!N_btchip.storageInitialized) {
         unsigned char initialized = 1, denied=1;
 

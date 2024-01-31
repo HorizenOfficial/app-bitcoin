@@ -42,7 +42,7 @@ int get_public_key_chain_code(unsigned char* keyPath, size_t keyPath_len, unsign
     return keyLength;
 }
 
-unsigned short btchip_apdu_get_wallet_public_key() {
+unsigned short btchip_apdu_get_wallet_public_key(void) {
     unsigned char keyLength;
     uint32_t request_token;
     unsigned char chainCode[32];

@@ -18,10 +18,7 @@
 #include "btchip_internal.h"
 #include "btchip_apdu_constants.h"
 
-#define P1_VERSION_ONLY 0x00
-#define P1_VERSION_COINID 0x01
-
-unsigned short btchip_apdu_get_coin_version() {
+unsigned short btchip_apdu_get_coin_version(void) {
     uint8_t offset = 0;
 
     G_io_apdu_buffer[offset++] = COIN_P2PKH_VERSION >> 8;
