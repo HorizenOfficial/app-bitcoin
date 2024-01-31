@@ -132,12 +132,6 @@
 #include "os.h"
 #include "btchip_secure_value.h"
 
-void btchip_commit_operation_mode(secu8 operationMode);
-
-unsigned short btchip_apdu_setup(void);
-unsigned short btchip_apdu_verify_pin(void);
-unsigned short btchip_apdu_get_operation_mode(void);
-unsigned short btchip_apdu_set_operation_mode(void);
 unsigned short btchip_apdu_get_wallet_public_key(void);
 unsigned short btchip_apdu_get_trusted_input(void);
 unsigned short btchip_apdu_hash_input_start(void);
@@ -149,9 +143,6 @@ unsigned short btchip_apdu_get_public_key(void);
 unsigned short btchip_apdu_derive_bip32_key(void);
 unsigned short btchip_apdu_signverify_immediate(void);
 unsigned short btchip_apdu_sign_message(void);
-
-unsigned short btchip_apdu_get_random(void);
-unsigned short btchip_apdu_get_firmware_version(void);
 
 unsigned short btchip_apdu_get_coin_version(void);
 
