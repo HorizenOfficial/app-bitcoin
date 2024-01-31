@@ -64,16 +64,20 @@ unsigned short btchip_apdu_hash_input_start() {
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_CASHADDR) ||
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_OVERWINTER) ||
                 (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_SAPLING);
-            unsigned char usingCashAddr =
-                (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_CASHADDR);
             // Master transaction reset
             btchip_context_D.transactionContext.firstSigned = 1;
             btchip_context_D.transactionContext.consumeP2SH = 0;
             btchip_context_D.transactionContext.relaxed = 0;
             btchip_context_D.usingSegwit = usingSegwit;
-            btchip_context_D.usingCashAddr =
-                (COIN_KIND == COIN_KIND_BITCOIN_CASH ? usingCashAddr
-                                                               : 0);
+
+            if (COIN_KIND == COIN_KIND_BITCOIN_CASH) {
+                unsigned char usingCashAddr = (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_CASHADDR);
+                btchip_context_D.usingCashAddr = usingCashAddr;
+            }
+            else {
+                btchip_context_D.usingCashAddr = 0;
+            }
+
             btchip_context_D.usingOverwinter = 0;
             if ((COIN_KIND == COIN_KIND_ZCASH) || (COIN_KIND == COIN_KIND_KOMODO) || (COIN_KIND == COIN_KIND_ZCLASSIC) || (COIN_KIND == COIN_KIND_RESISTANCE)) {
                 if (G_io_apdu_buffer[ISO_OFFSET_P2] == P2_NEW_SEGWIT_OVERWINTER) {
