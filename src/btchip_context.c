@@ -17,8 +17,6 @@
 
 #include "btchip_internal.h"
 
-void btchip_autosetup(void);
-
 /**
  * Initialize the application context on boot
  */
@@ -26,7 +24,6 @@ void btchip_context_init() {
     PRINTF("Context init\n");
     PRINTF("Backup size %d\n", sizeof(N_btchip.bkp));
     memset(&btchip_context_D, 0, sizeof(btchip_context_D));
-    SB_SET(btchip_context_D.halted, 0);
     btchip_context_D.called_from_swap = 0;
     btchip_context_D.currentOutputOffset = 0;
     btchip_context_D.outputParsingState = BTCHIP_OUTPUT_PARSING_NUMBER_OUTPUTS;
@@ -39,15 +36,6 @@ void btchip_context_init() {
         btchip_autosetup();
     }
 
-    if (!N_btchip.config_valid) {
-        unsigned char defaultMode;
-        PRINTF("No configuration found\n");
-        defaultMode = BTCHIP_MODE_SETUP_NEEDED;
-
-        btchip_set_operation_mode(defaultMode);
-    } else {
-        SB_CHECK(N_btchip.bkp.config.operationMode);
-    }
     if (!N_btchip.storageInitialized) {
         unsigned char initialized = 1, denied=1;
 

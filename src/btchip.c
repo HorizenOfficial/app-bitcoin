@@ -39,13 +39,6 @@ void app_dispatch(void) {
     btchip_context_D.outLength = 0;
     btchip_context_D.io_flags = 0;
 
-    // If halted, then notify
-    SB_CHECK(btchip_context_D.halted);
-    if (SB_GET(btchip_context_D.halted)) {
-        btchip_context_D.sw = BTCHIP_SW_TECHNICAL_PROBLEM;
-        goto sendSW;
-    }
-
     cla = G_io_apdu_buffer[ISO_OFFSET_CLA];
     ins = G_io_apdu_buffer[ISO_OFFSET_INS];
     for (dispatched = 0; dispatched < DISPATCHER_APDUS; dispatched++) {

@@ -24,13 +24,6 @@
 #include "btchip_context.h"
 #include "btchip_filesystem_tx.h"
 
-enum btchip_supported_modes_e {
-    BTCHIP_SUPPORTED_MODE_WALLET = 0x01,
-    BTCHIP_SUPPORTED_MODE_RELAXED_WALLET = 0x02,
-    BTCHIP_SUPPORTED_MODE_SERVER = 0x04,
-    BTCHIP_SUPPORTED_MODE_DEVELOPER = 0x08
-};
-
 enum btchip_family_e {
     BTCHIP_FAMILY_BITCOIN = 0x01,
     BTCHIP_FAMILY_PEERCOIN = 0x02,
@@ -38,8 +31,6 @@ enum btchip_family_e {
 };
 
 struct btchip_config_s {
-    secu8 supportedModes;
-    secu8 operationMode;
     unsigned char options;
     // unsigned short payToAddressVersion;
     // unsigned short payToScriptHashVersion;

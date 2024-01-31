@@ -24,13 +24,6 @@
 unsigned short btchip_apdu_get_coin_version() {
     uint8_t offset = 0;
 
-    SB_CHECK(N_btchip.bkp.config.operationMode);
-    if ((SB_GET(N_btchip.bkp.config.operationMode) ==
-         BTCHIP_MODE_SETUP_NEEDED) ||
-        (SB_GET(N_btchip.bkp.config.operationMode) == BTCHIP_MODE_ISSUER)) {
-        return BTCHIP_SW_CONDITIONS_OF_USE_NOT_SATISFIED;
-    }
-
     G_io_apdu_buffer[offset++] = G_coin_config->p2pkh_version >> 8;
     G_io_apdu_buffer[offset++] = G_coin_config->p2pkh_version;
     G_io_apdu_buffer[offset++] = G_coin_config->p2sh_version >> 8;
